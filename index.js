@@ -25,12 +25,32 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-// date
+//date
+app.get("/api", (req, res) => {
+  const dateNow = new Date();
+
+  res.json({
+    "unix": dateNow.getTime(),
+    "utc": dateNow.toUTCString()
+  });
+})
+
+// date with parameter
 app.get("/api/:date", (req, res) => {
   const dateParam = new Date(req.params.date);
-  console.log(dateParam.getFullYear());
 
-  res.json({ error : "Invalid Date" });
+  function dateIsValid(date) {
+    return date instanceof Date && !isNaN(date)    
+  }
+  
+  if (dateIsValid(dateParam) == false) {
+    res.json({ error : "Invalid Date" });
+  }
+
+  res.json({
+    "unix": dateParam.getTime(),
+    "utc": dateParam.toUTCString()
+  });
 })
 
 // listen for requests :)
