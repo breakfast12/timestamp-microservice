@@ -37,20 +37,26 @@ app.get("/api", (req, res) => {
 
 // date with parameter
 app.get("/api/:date", (req, res) => {
-  const dateParam = new Date(req.params.date);
+  let params = req.params.date;
+  let date = new Date(params);
+  let parseToInt = parseInt(params);
 
-  function dateIsValid(date) {
-    return date instanceof Date && !isNaN(date)    
-  }
-  
-  if (dateIsValid(dateParam) == false) {
-    res.json({ error : "Invalid Date" });
+  if (parseToInt > 10000) {
+    let unix = new Date(parseToInt);
+    return res.json({
+      "unix": unix.getTime(),
+      "utc": unix.toUTCString()
+    });
   }
 
-  res.json({
-    "unix": dateParam.getTime(),
-    "utc": dateParam.toUTCString()
-  });
+  if (date == "Invalid Date") {
+    return res.json({ error : "Invalid Date" });
+  } else {
+    res.json({
+      "unix": date.getTime(),
+      "utc": date.toUTCString()
+    });
+  }
 })
 
 // listen for requests :)
